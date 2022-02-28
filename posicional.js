@@ -5,12 +5,12 @@
 let totalCaracteres = 0
 let linhaPosicional = ""
 
-let palavra1 = {campo: "Nome",valor: "José", tamanho: 10, fillerDireita: true }
-let palavra2 = {campo: "Sobrenome", valor: "Silva", tamanho: 10, filler: "-"}
+let palavra1 = {campo: "Nome",valor: "Chavo", tamanho: 10, fillerDireita: true }
+let palavra2 = {campo: "Sobrenome", valor: "Del Ocho", tamanho: 10, filler: "-"}
 let palavra3 = {campo: "Idade", valor: "25", tamanho: 10, filler: 0}
-let palavra4 = {campo: "Cidade", valor: "Itap", tamanho: 15, filler: "\xa0"}
-let palavra5 = {campo: "Bairro", valor: "Pq. Paraiso", tamanho: 10, filler: "\xa0"}
-let palavra6 = {campo: "Telefone", valor: "116565", tamanho: 10, filler: "00", fillerDireita: true}
+let palavra4 = {campo: "Cidade", valor: "Acapulco", tamanho: 15, filler: "\xa0"}
+let palavra5 = {campo: "Bairro", valor: "Guarujá", tamanho: 10, filler: "\xa0"}
+let palavra6 = {campo: "Telefone", valor: "11-6565-6574", tamanho: 10, filler: "00", fillerDireita: true}
 
 let palavras = [palavra1, palavra2, palavra3, palavra4, palavra5, palavra6]
 
@@ -41,8 +41,6 @@ body.addEventListener("keyup", ev => {
     // console.log("não pegou");
   }
   if(ev.key == "Tab" && ultimasTeclas[0] !== "Tab") {
-    // console.log("Entrou");
-    console.log(ultimaClasse)
     if (ultimaClasse[0] === 'campo') {
       document.querySelector(`#valor_${ultimaClasse[1]}`).focus()
     }
@@ -56,13 +54,7 @@ body.addEventListener("keyup", ev => {
       document.querySelector(`#fillerDireita_${ultimaClasse[1]}`).focus()
     }
   }
-
-  console.log(ultimaClasse)
-  // console.log(ev);
-  console.log(ultimasTeclas);
 } )
-
-
 
 function formataBonito(jsonStr) {
   return jsonStr.replaceAll('[', '[\n ')
@@ -72,14 +64,52 @@ function formataBonito(jsonStr) {
 }
 
 function objParaJson() { // Só quando clica em copiar
-  // TODO, deixar mais bonito, quebrando linhas, etc
   let json = JSON.stringify(palavrasProcessadas())
   return formataBonito(json)
 }
 
-function exportar() {
+function exportar(str) {
   atualizaLista()
-  navigator.clipboard.writeText(objParaJson())
+  if (str === 'json') {
+    navigator.clipboard.writeText(objParaJson())
+  } else {
+    navigator.clipboard.writeText(document.querySelector('#linhaPosicional').innerText)
+  }
+}
+
+// Download
+
+filenameResultado = 'resultadoPosicional.txt'
+filenameJSON = 'posicional.json'
+
+function baixar(text, tipo) {
+  let filename = ''
+
+  if (tipo == 'exportResultado') {
+    if (filenameResultado === null) {
+      filenameResultado = 'resultadoPosicional.txt'
+    }
+    filenameResultado = prompt("Nome do arquivo:", filenameResultado)
+    filename = filenameResultado !== '' ? filenameResultado : 'resultadoPosicional.txt'
+  } else {
+    if (filenameJSON === null) {
+      filenameJSON = 'posicional.json'
+    }
+    filenameJSON = prompt("Nome do arquivo:", filenameJSON)
+    filename = filenameJSON !== '' ? filenameJSON : 'posicional.json'
+  }
+
+  if (filename) { // Só segue se der OK no prompt
+    var element = document.createElement('a');
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+    element.setAttribute('download', filename);
+    element.style.display = 'none';
+    document.body.appendChild(element);
+  
+    element.click();
+  
+    document.body.removeChild(element);
+  }
 }
 
 // Validação
@@ -142,7 +172,7 @@ function jsonParaObj(cmd) {
     erros = validaCampos(json)
 
     if (erros.length) {
-      console.log(erros);
+      alert(erros)
     } else {
       tudoOk = true
     }
@@ -179,9 +209,9 @@ function jsonParaObj(cmd) {
 
 const modeloNovoCampo = {campo: "", valor: "", tamanho: 10, filler: "\xa0"}
 
-function criaCampo(posicao) {
-  novaPosicao = (posicao + 1)
-  palavras.splice(novaPosicao, 0, modeloNovoCampo)
+function criaCampo(posicao, campo) {
+  novaPosicao = posicao + 1
+  palavras.splice(novaPosicao, 0, campo)
   atualizaLista()
   document.querySelector(`#campo_${novaPosicao}`).focus()
 }
@@ -192,6 +222,21 @@ function removeCampo(posicao) {
     palavras.push(modeloNovoCampo)
   }
   atualizaLista()
+  try { // TODO Fazer solução melhor do que essa
+    document.querySelector(`#campo_${posicao}`).focus()
+  } catch (error) { // Migué demais usar isso
+    document.querySelector(`#campo_${posicao - 1}`).focus()
+  }
+}
+
+function moveCampo(posicaoOriginal, posicaoFinal, foco) {
+  if (palavras[posicaoFinal + 1]) { // Garante que não vai continuar movendo se não tem para onde ir
+    let campo = palavras[posicaoOriginal]
+    removeCampo(posicaoOriginal)
+    criaCampo(posicaoFinal, campo)
+    atualizaLista()
+    document.querySelector(`#${foco}`).focus()
+  }
 }
 
 function atualizaCampo(index, classeCSS) {
@@ -272,7 +317,7 @@ function posicaoInicialFinal(totalCaracteres, tamanho) {
 function geraInputsHTML({campo, valor, tamanho, filler, fillerDireita}, index, totalCaracteres) {
   let botaoRemover = ''
   if (palavrasProcessadas().length !== 1) {
-    botaoRemover = `<button class="remover" id="botaoREM$_${index}" onclick="removeCampo(${index})">REM</button>`
+    botaoRemover = `<button class="remover" id="botaoREM$_${index}" onclick="removeCampo(${index})">➖</button>`
   }
 
   let linha = `<div class="linhaPosicional_${index}" onmouseover="acenderCampos('linhaPosicional_${index}')" onmouseout="apagarCampos('linhaPosicional_${index}')">` +
@@ -284,8 +329,10 @@ function geraInputsHTML({campo, valor, tamanho, filler, fillerDireita}, index, t
               geraLinhaInput(index, "text", filler, "filler", "Filler", 4) +
               '<label>Filler à direita:</label>' +
               geraLinhaInput(index, "checkbox", fillerDireita, "fillerDireita", "Filler") +
-              `<button id="botaoADD_${index}" onclick="criaCampo(${index})">ADD</button>` +
+              `<button id="botaoADD_${index}" onclick="criaCampo(${index}, modeloNovoCampo)">➕</button>` +
               botaoRemover +
+              `<button class="move" id="botaoSobe_${index}" onclick="moveCampo(${index}, ${index} - 2, 'botaoSobe_${index - 1}')">⬆️ </button>` +
+              `<button class="move" id="botaoDesce_${index}" onclick="moveCampo(${index}, ${index}, 'botaoDesce_${index + 1}')">⬇️</button>` +
               "</div>"
   return linha
 }

@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Criador de arquivo posicional</title>
+  <title>Positor 1.1</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -14,16 +14,23 @@
     <p>Resultado:</p>
     <div id="linhaPosicional"></div><br> 
     <div id="tamanhoLinhaPosicional"></div>
+    <button id="btCopiarResultado" onclick="exportar('resultado')">Copiar</button>
+    <button id="btBaixarResultado" onclick="baixar(document.querySelector('#linhaPosicional').innerText, 'exportResultado')">Baixar</button>
   </div>
   <br>
   <div class="layout">
     <p>Exportar layout JSON:</p>
     <div id="json"></div><br> 
-    <button id="btCopiar" onclick="exportar()">Copiar</button>
+    <button id="btCopiarLayout" onclick="exportar('json')">Copiar</button>
+    <button id="btBaixarJSON" onclick="baixar(document.querySelector('#json').innerText, 'exportJSON')">Baixar</button>
   </div>
   <br>
   <div class="layout">
     <p>Importar layout JSON:</p>
+    <input type="radio" id="importForm" name="tipoImport" value="importForm" checked=true>
+    <label for="importForm">Formulário</label>
+    <input type="radio" id="importArquivo" name="tipoImport" value="importArquivo" disabled>
+    <label for="importArquivo" style="color: gray;">Arquivo</label>
     <div>
       <textarea name="layoutImport" id="layoutImport" cols="80" rows="10"></textarea>
     </div>

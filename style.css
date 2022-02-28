@@ -39,6 +39,10 @@ button {
   background-color: rgb(255, 116, 116);
 }
 
+.move {
+  background-color: rgb(255, 255, 255);
+}
+
 #linhaPosicional {
   font-family: monospace;
 }
