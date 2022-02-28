@@ -1,0 +1,52 @@
+body {
+  background-color: rgb(206, 206, 206);
+}
+
+#resultado {
+  border-style: solid;
+  border-radius: 1px;
+  border-color: black;
+}
+
+.layout {
+  border-style: solid;
+  border-radius: 1px;
+  border-color: black;
+}
+
+textarea {
+  margin: 10px;
+}
+
+input {
+  margin-right: 5px;
+  margin-bottom: 3px;
+}
+
+label {
+  margin-left: 10px;
+}
+
+button {
+  background-color: #4CAF50;
+  border: none;
+  padding: 3px;
+  border-radius: 5px;
+  margin-left: 5px;
+}
+
+.remover {
+  background-color: rgb(255, 116, 116);
+}
+
+#linhaPosicional {
+  font-family: monospace;
+}
+
+/* .selected:hover {
+  background-color: rgb(143, 143, 255);
+} */
+
+.posicaoInicialFinal {
+  width: 200px;
+}

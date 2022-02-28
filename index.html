@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Criador de arquivo posicional</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="inputs">
+  </div>
+  <div id="resultado">
+    <p>Resultado:</p>
+    <div id="linhaPosicional"></div><br> 
+    <div id="tamanhoLinhaPosicional"></div>
+  </div>
+  <br>
+  <div class="layout">
+    <p>Exportar layout JSON:</p>
+    <div id="json"></div><br> 
+    <button id="btCopiar" onclick="exportar()">Copiar</button>
+  </div>
+  <br>
+  <div class="layout">
+    <p>Importar layout JSON:</p>
+    <div>
+      <textarea name="layoutImport" id="layoutImport" cols="80" rows="10"></textarea>
+    </div>
+    <button onclick="jsonParaObj('addFinal')">Inserir no final</button>
+    <button onclick="jsonParaObj('addCustom')">Inserir após o campo...</button>
+    <button onclick="jsonParaObj('sub')">Substituir</button>
+  </div>
+  <script src="posicional.js"></script>
+</body>
+</html>
