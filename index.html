@@ -4,12 +4,13 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Positor 1.1</title>
+  <title>Positor 1.2</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="inputs">
   </div>
+  <button id="limparCampos" onclick="limparCampos()">Limpar Campos</button>
   <div id="resultado">
     <p>Resultado:</p>
     <div id="linhaPosicional"></div><br> 
@@ -20,6 +21,9 @@
   <br>
   <div class="layout">
     <p>Exportar layout JSON:</p>
+    <input type="checkbox" name="quebrarLinhas" id="quebrarLinhas" onclick="atualizaLista()" checked>
+    <label for="quebrarLinhas">Quebrar linhas</label>
+    <br><br>
     <div id="json"></div><br> 
     <button id="btCopiarLayout" onclick="exportar('json')">Copiar</button>
     <button id="btBaixarJSON" onclick="baixar(document.querySelector('#json').innerText, 'exportJSON')">Baixar</button>
@@ -37,6 +41,7 @@
     <button onclick="jsonParaObj('addFinal')">Inserir no final</button>
     <button onclick="jsonParaObj('addCustom')">Inserir após o campo...</button>
     <button onclick="jsonParaObj('sub')">Substituir</button>
+    <button id="limparFormulário" onclick="limparFormulario()">Limpar Formulário</button>
   </div>
   <script src="posicional.js"></script>
 </body>

@@ -28,11 +28,14 @@ label {
 }
 
 button {
-  background-color: #4CAF50;
   border: none;
-  padding: 3px;
+  padding: 5px;
   border-radius: 5px;
-  margin-left: 5px;
+  margin: 3px;
+}
+
+.adicionar {
+  background-color: #4CAF50;
 }
 
 .remover {
@@ -43,13 +46,19 @@ button {
   background-color: rgb(255, 255, 255);
 }
 
-#linhaPosicional {
+#json {
   font-family: monospace;
 }
 
-/* .selected:hover {
-  background-color: rgb(143, 143, 255);
-} */
+#linhaPosicional {
+  overflow: auto; /*  O problema é que no começo fica errado */
+  background-color: rgb(192, 182, 182);
+  font-family: monospace;
+}
+
+.outraCor {
+  background-color: rgb(167, 157, 157);
+}
 
 .posicaoInicialFinal {
   width: 200px;

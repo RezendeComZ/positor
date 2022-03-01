@@ -1,6 +1,7 @@
-//////////////////////////////////////////////////////////////////
-// ! Cuidado, código feito as pressas e sem planejamento à frente!
-//////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////
+// ! Cuidado, código feito as pressas e sem planejamento à frente!//
+//                      Manuseie com cuidado                      //
+////////////////////////////////////////////////////////////////////
 
 let totalCaracteres = 0
 let linhaPosicional = ""
@@ -10,7 +11,7 @@ let palavra2 = {campo: "Sobrenome", valor: "Del Ocho", tamanho: 10, filler: "-"}
 let palavra3 = {campo: "Idade", valor: "25", tamanho: 10, filler: 0}
 let palavra4 = {campo: "Cidade", valor: "Acapulco", tamanho: 15, filler: "\xa0"}
 let palavra5 = {campo: "Bairro", valor: "Guarujá", tamanho: 10, filler: "\xa0"}
-let palavra6 = {campo: "Telefone", valor: "11-6565-6574", tamanho: 10, filler: "00", fillerDireita: true}
+let palavra6 = {campo: "Telefone", valor: "11-6565-6574", tamanho: 15, filler: "0"}
 
 let palavras = [palavra1, palavra2, palavra3, palavra4, palavra5, palavra6]
 
@@ -75,6 +76,7 @@ function exportar(str) {
   } else {
     navigator.clipboard.writeText(document.querySelector('#linhaPosicional').innerText)
   }
+  window.alert("Copiado para a área de transferência.")
 }
 
 // Download
@@ -128,6 +130,10 @@ function campoExiste(valor, index, nome) {
 
 function validaCampos(array) {
   let erros = []
+
+  if (!array.length) {
+    erros.push("Formulário vazio.") // Fazer modificação para também informar arquivo
+  }
 
   array.forEach((coluna, index) => {
     // Campos obrigatórios
@@ -202,15 +208,23 @@ function jsonParaObj(cmd) {
       }
     }
   } catch (e){ // TODO, se mandar sem estar em um array, só um obj cai aqui tbm
-    console.log("deu ruim. Exibir na tela alguma coisa"); // TODO
-    console.log(e); // TODO
+    window.alert("JSON inválido")
   }
 }
 
 const modeloNovoCampo = {campo: "", valor: "", tamanho: 10, filler: "\xa0"}
 
+function limparCampos() {
+  confirma = window.confirm("Deseja apagar todos os campos?")
+  if (confirma) {
+    palavras = [modeloNovoCampo]
+    atualizaLista()
+    document.querySelector(`#campo_${0}`).focus()
+  }
+}
+
 function criaCampo(posicao, campo) {
-  novaPosicao = posicao + 1
+  novaPosicao = posicao
   palavras.splice(novaPosicao, 0, campo)
   atualizaLista()
   document.querySelector(`#campo_${novaPosicao}`).focus()
@@ -236,6 +250,28 @@ function moveCampo(posicaoOriginal, posicaoFinal, foco) {
     criaCampo(posicaoFinal, campo)
     atualizaLista()
     document.querySelector(`#${foco}`).focus()
+  }
+}
+
+function moveCampoPrompt(index) {
+  novaPosicao = parseInt(prompt(`Deseja mover o campo ${index + 1} para qual posição?`)) - 1
+
+  if (novaPosicao < 0) {
+    novaPosicao = 0
+  }
+  
+  if (novaPosicao || novaPosicao === 0) {
+    moveCampo(index, novaPosicao, `btPosicao_${novaPosicao}`)
+  }
+  atualizaLista()
+}
+
+function limparFormulario() {
+  confirma = window.confirm("Deseja apagar todos o formulário?")
+  if (confirma) {
+    document.querySelector("#layoutImport").value = ""
+    atualizaLista()
+    document.querySelector("#layoutImport").focus()
   }
 }
 
@@ -321,7 +357,7 @@ function geraInputsHTML({campo, valor, tamanho, filler, fillerDireita}, index, t
   }
 
   let linha = `<div class="linhaPosicional_${index}" onmouseover="acenderCampos('linhaPosicional_${index}')" onmouseout="apagarCampos('linhaPosicional_${index}')">` +
-              `${index + 1}   ` +
+              `<button id=btPosicao_${index} onclick="moveCampoPrompt(${index})">${index + 1}</button>   ` +
               geraLinhaInput(index, "text", campo, "campo", "Nome do campo (opcional)") +
               geraLinhaInput(index, "text", valor, "valor", "Valor") + 
               geraLinhaInput(index, "number", tamanho, "tamanho", "Tam" , 5) +
@@ -329,10 +365,11 @@ function geraInputsHTML({campo, valor, tamanho, filler, fillerDireita}, index, t
               geraLinhaInput(index, "text", filler, "filler", "Filler", 4) +
               '<label>Filler à direita:</label>' +
               geraLinhaInput(index, "checkbox", fillerDireita, "fillerDireita", "Filler") +
-              `<button id="botaoADD_${index}" onclick="criaCampo(${index}, modeloNovoCampo)">➕</button>` +
+              `<button class="adicionar" id="botaoADD_${index}" onclick="criaCampo(${index + 1}, modeloNovoCampo)">➕</button>` +
               botaoRemover +
-              `<button class="move" id="botaoSobe_${index}" onclick="moveCampo(${index}, ${index} - 2, 'botaoSobe_${index - 1}')">⬆️ </button>` +
-              `<button class="move" id="botaoDesce_${index}" onclick="moveCampo(${index}, ${index}, 'botaoDesce_${index + 1}')">⬇️</button>` +
+              `<button class="move" id="botaoSobe_${index}" onclick="moveCampo(${index}, ${index - 1}, 'botaoSobe_${index - 1}')">⬆️ </button>` +
+              `<button class="move" id="botaoDesce_${index}" onclick="moveCampo(${index}, ${index + 1}, 'botaoDesce_${index + 1}')">⬇️</button>` +
+              `<button class="move" id="botaoDuplicar_${index}" onclick="criaCampo(${index + 1}, palavras[${index}])">📋</button>` +
               "</div>"
   return linha
 }
@@ -350,6 +387,8 @@ function apagarCampos(classeCSS) {
 }
 
 function atualizaLista() {
+  const quebrarLinhas = document.querySelector('#quebrarLinhas').checked
+
   linhaPosicional = ''
   totalCaracteres = 0
   document.querySelector(".inputs").innerHTML = ''
@@ -360,7 +399,7 @@ function atualizaLista() {
     
     // Separador negrito:
     if (index % 2 === 0) {
-      linhaPosicional += '<b>'
+      linhaPosicional += '<b class="outraCor">'
     } else {
       linhaPosicional += "</b>"
     }
@@ -376,7 +415,7 @@ function atualizaLista() {
   document.querySelector("#linhaPosicional").innerHTML = linhaPosicional
   document.querySelector("#tamanhoLinhaPosicional").innerText =  "Tamanho: " + totalCaracteres
 
-  document.querySelector("#json").innerText = formataBonito(JSON.stringify(palavrasProcessadas()))
+  document.querySelector("#json").innerText = quebrarLinhas ? formataBonito(JSON.stringify(palavrasProcessadas())) : JSON.stringify(palavrasProcessadas())
 }
 
 atualizaLista()
