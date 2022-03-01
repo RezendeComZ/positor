@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Positor 1.2</title>
+  <title>Positor 1.3</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -31,10 +31,8 @@
   <br>
   <div class="layout">
     <p>Importar layout JSON:</p>
-    <input type="radio" id="importForm" name="tipoImport" value="importForm" checked=true>
-    <label for="importForm">Formulário</label>
-    <input type="radio" id="importArquivo" name="tipoImport" value="importArquivo" disabled>
-    <label for="importArquivo" style="color: gray;">Arquivo</label>
+    <label for="arquivosSelecionados">JSON:</label>
+    <input type="file" id="arquivosSelecionados">
     <div>
       <textarea name="layoutImport" id="layoutImport" cols="80" rows="10"></textarea>
     </div>

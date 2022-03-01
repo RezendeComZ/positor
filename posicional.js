@@ -26,7 +26,19 @@ function palavrasProcessadas() {
   })
 }
 
-let body = document.querySelector("body")
+function qSelect(select) {
+  return document.querySelector(select)
+}
+
+function qSelectAll(select) {
+  return document.querySelectorAll(select)
+}
+
+function focus(select) {
+  return qSelect(select).focus()
+}
+
+let body = qSelect("body")
 
 let ultimaClasse = []
 let ultimasTeclas = []
@@ -43,19 +55,19 @@ body.addEventListener("keyup", ev => {
   }
   if(ev.key == "Tab" && ultimasTeclas[0] !== "Tab") {
     if (ultimaClasse[0] === 'campo') {
-      document.querySelector(`#valor_${ultimaClasse[1]}`).focus()
+      focus(`#valor_${ultimaClasse[1]}`)
     }
     if (ultimaClasse[0] === 'valor') {
-      document.querySelector(`#tamanho_${ultimaClasse[1]}`).focus()
+      focus(`#tamanho_${ultimaClasse[1]}`)
     }
     if (ultimaClasse[0] === 'tamanho') {
-      document.querySelector(`#filler_${ultimaClasse[1]}`).focus()
+      focus(`#filler_${ultimaClasse[1]}`)
     }
     if (ultimaClasse[0] === 'filler') {
-      document.querySelector(`#fillerDireita_${ultimaClasse[1]}`).focus()
+      focus(`#fillerDireita_${ultimaClasse[1]}`)
     }
   }
-} )
+})
 
 function formataBonito(jsonStr) {
   return jsonStr.replaceAll('[', '[\n ')
@@ -74,7 +86,7 @@ function exportar(str) {
   if (str === 'json') {
     navigator.clipboard.writeText(objParaJson())
   } else {
-    navigator.clipboard.writeText(document.querySelector('#linhaPosicional').innerText)
+    navigator.clipboard.writeText(qSelect('#linhaPosicional').innerText)
   }
   window.alert("Copiado para a área de transferência.")
 }
@@ -106,13 +118,27 @@ function baixar(text, tipo) {
     element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
     element.setAttribute('download', filename);
     element.style.display = 'none';
-    document.body.appendChild(element);
+    body.appendChild(element);
   
     element.click();
   
-    document.body.removeChild(element);
+    body.removeChild(element);
   }
 }
+
+// Upload
+
+const arquivosSelecionados = qSelect('#arquivosSelecionados');
+
+arquivosSelecionados.addEventListener('change', (event) => {
+  const fileList = event.target.files;
+  fileList[0].text().then(arquivo => {
+    qSelect("#layoutImport").value += arquivo
+    focus("#layoutImport")
+  })
+});
+
+//
 
 // Validação
 function tipoDado(valor, tipo, index, nome) {
@@ -165,7 +191,7 @@ function validaCampos(array) {
 //////////////////////////////////
 
 function jsonParaObj(cmd) {
-  let layoutImport = '[' + document.querySelector("#layoutImport").value + ']'
+  let layoutImport = '[' + qSelect("#layoutImport").value + ']'
   layoutImport = layoutImport.replace('[[', '[')
                              .replace(']]', ']')
                              .replace(',]', ']')
@@ -219,7 +245,7 @@ function limparCampos() {
   if (confirma) {
     palavras = [modeloNovoCampo]
     atualizaLista()
-    document.querySelector(`#campo_${0}`).focus()
+    focus(`#campo_${0}`)
   }
 }
 
@@ -227,7 +253,7 @@ function criaCampo(posicao, campo) {
   novaPosicao = posicao
   palavras.splice(novaPosicao, 0, campo)
   atualizaLista()
-  document.querySelector(`#campo_${novaPosicao}`).focus()
+  focus(`#campo_${novaPosicao}`)
 }
 
 function removeCampo(posicao) {
@@ -237,9 +263,9 @@ function removeCampo(posicao) {
   }
   atualizaLista()
   try { // TODO Fazer solução melhor do que essa
-    document.querySelector(`#campo_${posicao}`).focus()
+    focus(`#campo_${posicao}`)
   } catch (error) { // Migué demais usar isso
-    document.querySelector(`#campo_${posicao - 1}`).focus()
+    focus(`#campo_${posicao - 1}`)
   }
 }
 
@@ -249,7 +275,7 @@ function moveCampo(posicaoOriginal, posicaoFinal, foco) {
     removeCampo(posicaoOriginal)
     criaCampo(posicaoFinal, campo)
     atualizaLista()
-    document.querySelector(`#${foco}`).focus()
+    focus(`#${foco}`)
   }
 }
 
@@ -269,24 +295,24 @@ function moveCampoPrompt(index) {
 function limparFormulario() {
   confirma = window.confirm("Deseja apagar todos o formulário?")
   if (confirma) {
-    document.querySelector("#layoutImport").value = ""
+    qSelect("#layoutImport").value = ""
     atualizaLista()
-    document.querySelector("#layoutImport").focus()
+    focus("#layoutImport")
   }
 }
 
 function atualizaCampo(index, classeCSS) {
   if (classeCSS !== 'fillerDireita') {
-    palavras[index][classeCSS] = document.querySelector(`#${classeCSS + '_' + index}`).value
+    palavras[index][classeCSS] = qSelect(`#${classeCSS + '_' + index}`).value
     atualizaLista()
   } else { // fillerDireita
-    if (document.querySelector(`#${classeCSS + '_' + index}`).checked) {
-      palavras[index][classeCSS] = document.querySelector(`#${classeCSS + '_' + index}`).checked = true;
+    if (qSelect(`#${classeCSS + '_' + index}`).checked) {
+      palavras[index][classeCSS] = qSelect(`#${classeCSS + '_' + index}`).checked = true;
     } else {
-      palavras[index][classeCSS] = document.querySelector(`#${classeCSS + '_' + index}`).checked = false;
+      palavras[index][classeCSS] = qSelect(`#${classeCSS + '_' + index}`).checked = false;
     }
     atualizaLista()
-    document.querySelector(`#${classeCSS + '_' + index}`).focus()
+    focus(`#${classeCSS + '_' + index}`)
   }
 }
 
@@ -362,6 +388,7 @@ function geraInputsHTML({campo, valor, tamanho, filler, fillerDireita}, index, t
               geraLinhaInput(index, "text", valor, "valor", "Valor") + 
               geraLinhaInput(index, "number", tamanho, "tamanho", "Tam" , 5) +
               posicaoInicialFinal(totalCaracteres, tamanho) +
+              '- Filler: ' +
               geraLinhaInput(index, "text", filler, "filler", "Filler", 4) +
               '<label>Filler à direita:</label>' +
               geraLinhaInput(index, "checkbox", fillerDireita, "fillerDireita", "Filler") +
@@ -376,26 +403,26 @@ function geraInputsHTML({campo, valor, tamanho, filler, fillerDireita}, index, t
 
 // Dá para fazer algo melhor com essas duas funções
 function acenderCampos(classeCSS) {
-  document.querySelectorAll("." + classeCSS).forEach(input => {
+  qSelectAll("." + classeCSS).forEach(input => {
     input.style.backgroundColor = "rgb(143, 143, 255)"
   })
 }
 function apagarCampos(classeCSS) {
-  document.querySelectorAll("." + classeCSS).forEach(input => {
+  qSelectAll("." + classeCSS).forEach(input => {
     input.style.backgroundColor = ""
   })
 }
 
 function atualizaLista() {
-  const quebrarLinhas = document.querySelector('#quebrarLinhas').checked
+  const quebrarLinhas = qSelect('#quebrarLinhas').checked
 
   linhaPosicional = ''
   totalCaracteres = 0
-  document.querySelector(".inputs").innerHTML = ''
+  qSelect(".inputs").innerHTML = ''
 
   palavrasProcessadas().forEach((palavra, index) => {
     totalCaracteres += parseInt(palavra.tamanho)
-    document.querySelector(".inputs").innerHTML += geraInputsHTML(palavra, index, totalCaracteres) + '<br>'
+    qSelect(".inputs").innerHTML += geraInputsHTML(palavra, index, totalCaracteres) + '<br>'
     
     // Separador negrito:
     if (index % 2 === 0) {
@@ -408,14 +435,14 @@ function atualizaLista() {
 
   // Resultado
   if (linhaPosicional.length) {
-    document.querySelector("#resultado").style.display = "block";
+    qSelect("#resultado").style.display = "block";
   } else {
-    document.querySelector("#resultado").style.display = "none"; // TODO, testar
+    qSelect("#resultado").style.display = "none"; // TODO, testar
   }
-  document.querySelector("#linhaPosicional").innerHTML = linhaPosicional
-  document.querySelector("#tamanhoLinhaPosicional").innerText =  "Tamanho: " + totalCaracteres
+  qSelect("#linhaPosicional").innerHTML = linhaPosicional
+  qSelect("#tamanhoLinhaPosicional").innerText =  "Tamanho: " + totalCaracteres
 
-  document.querySelector("#json").innerText = quebrarLinhas ? formataBonito(JSON.stringify(palavrasProcessadas())) : JSON.stringify(palavrasProcessadas())
+  qSelect("#json").innerText = quebrarLinhas ? formataBonito(JSON.stringify(palavrasProcessadas())) : JSON.stringify(palavrasProcessadas())
 }
 
 atualizaLista()

@@ -17,18 +17,18 @@ Pode ser usado [aqui](https://rezendecomz.github.io/positor/)
 
 - Fazer um layout bonito sem libs externas
 - Scroll lateral no resultado
+- Opção de collapse nas seções
 - Alt + Seta para cima/baixo para mudar a coluna de lugar (assim como no VsCode)
 - Alt + Shift + Seta para cima/baixo para duplicar (assim como no VsCode)
 - Trocar a ordem arrastando
-- Importar arquivo de layout
 - Trocar alert() por outras coisas
 - Poder escolher encoding do download do resultado
-- trocar querySelector por função pra simplificar
-- Fazer função pra "focus()"
 - Juntar querySelector repetidos em consts
 - Campo de número inteiro, e casas decimais. Caso exista é número. (ex json: numero {inteiros: 4, decimais: 2}). Se tiver string em 'valor' e não for vírgula ou ponto, os campos ficam cinzas
 - Configuração padrão opcional para fillers (texto e números)
 - O input html de número não aceita value e placeholder ao mesmo tempo. Então observar se o campo estiver vazio para colocar placehold e remover quando tiver alguma coisa
+- onclick nos campos do resultado dão foco ao valor do campo
+- mouseOver nos campos do resultado mostram também características de cada campo
 - Ferramenta para Bater leiaute
 - Gerar header/footer opcionalmente
 - Adicionar separador opcional, com opção de descontar no tamanho do filler (Ex: Teste           ;OutraCoisa           ;). Teria que reduzir o tamanho (slice(0, tamanho - {tamanho do separador})) baseado no tamanho do separador
@@ -44,6 +44,7 @@ Pode ser usado [aqui](https://rezendecomz.github.io/positor/)
 
 | Versão | Funcionalidades   |
 | -------| ----------------- |
+| 1.3    | Importar arquivo de layout e limpeza no código.|
 | 1.2    | Botão 'Duplicar' e 'Limpar Campos'. Ao clicar no index, pode mudar de posição digitando. Novas validações e alertas. Opção de quebrar linhas no JSON. Resultado com contraste entre as colunas.|
 | 1.1    | Funcionalidade de baixar Resultado e JSON. Botões de mover coluna de lugar.|
 | 1.0    | Criador de layout, gerador de linha posicional, importador e exportador.|
